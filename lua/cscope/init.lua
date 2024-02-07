@@ -278,7 +278,7 @@ end
 
 local cscope = function(cmd, op, symbol)
 	-- Parse top level output and call appropriate functions
-	if cmd == "find" then
+	if cmd == "find" or cmd == "f" then
 		cscope_find(op, symbol)
 	elseif cmd == "build" then
 		cscope_build()
@@ -317,6 +317,28 @@ local cscope_user_command = function()
 		cscope_cstag(unpack(opts.fargs))
 	end, {
 		nargs = "*",
+	})
+
+	-- Create the :CS user command
+	vim.api.nvim_create_user_command("CS", function(opts)
+		cscope(unpack(opts.fargs))
+	end, {
+		nargs = "*",
+		complete = function(_, line)
+			local cmds = { "find", "build", "help" }
+			local l = vim.split(line, "%s+")
+			local n = #l - 2
+
+			if n == 0 then
+				return vim.tbl_filter(function(val)
+					return vim.startswith(val, l[2])
+				end, cmds)
+			end
+
+			if n == 1 and l[2] == "find" then
+				return vim.tbl_keys(M.op_s_n)
+			end
+		end,
 	})
 end
 
