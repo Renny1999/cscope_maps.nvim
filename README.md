@@ -1,5 +1,5 @@
 # cscope_maps.nvim
-
+Added :CS command and `f` for `find`
 For old school code navigation :)
 
 Heavily inspired by emacs' [xcscope.el](https://github.com/dkogan/xcscope.el).
